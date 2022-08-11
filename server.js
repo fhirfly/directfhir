@@ -7,16 +7,17 @@ var logger = require('morgan');
 var path = require('path');
 const fs = require('fs');
 const { uuid } = require('uuidv4');
+const basicAuth = require('express-basic-auth')
 
 var app = express();
 app.use(logger('dev'));
 
+app.use(basicAuth({
+    users: { 'admin': 'supersecret' }
+}))
+
 app.get('/:folder/:file', function(req, res) {
   console.log('reading file');
-  if (req.params!=null){
-    executeSearch(req, res);
-    res.end;
-  }
   // Note: should use a stream here, instead of fs.readFile
   var raw = fs.createReadStream('./gitfhir/' + req.params.folder + '/' + req.params.file)
   raw.on('error', function(err) {
@@ -127,6 +128,10 @@ app.put('/:folder/:file', function(req, res) {
       res.send('Internal Server Error');    
   });
 });
+
+function executeSearch(){
+  return;
+}
 
 app.listen(3000);
 console.log('listening on port 3000');
