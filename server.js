@@ -7,9 +7,58 @@ var logger = require('morgan');
 var path = require('path');
 const fs = require('fs');
 const { uuid } = require('uuidv4');
+//const {Bundle} = require('fhir');
 
 var app = express();
 app.use(logger('dev'));
+
+app.get('/:folder', function(req, res) {
+  console.log('reading file');
+  if (req.params!=null){
+    executeSearch(req, res);
+    res.end;
+  }
+  // If this isn't a search
+  // For every file in the directory, roll each up in a bundle
+  // respect the _count parameter,
+  // support paging
+  // Note: should use a stream here, instead of fs.readFile
+
+  try {
+    // Get the files as an array
+    const files = await fs.promises.readdir( './gitfhir/' + req.params.folder);
+    //var Bundle = new Bundle;
+    //Bundle.id = uuid();
+    //Bundle.name="";
+    // Loop them all with the new for...of
+    for( const file of files ) {
+        // Get the full paths
+        const fromPath = path.join( './gitfhir/' + req.params.folder, file );        
+        // Stat the file to see if we have a file or dir
+        const stat = await fs.promises.stat( fromPath );
+        if( stat.isFile() )
+        var raw = fs.createReadStream(file)
+        //Toto : Add file to a Bundle resource
+        //raw.pipe(Bundle.entry.add);
+        raw.on('error', function(err) {
+          if (err.code === 'ENOENT') {
+            console.log('File not found!');
+            res.statusCode = 404;
+            res.send('File Not Found');
+          } else {
+            console.log(err);
+            res.statusCode = 500;
+            res.send('Internal Server Error');      
+          }
+        });        
+    } // End for...of
+  }
+  catch( e ) {
+    // Catch anything bad that happens
+    console.error( "We've thrown! Whoops!", e );
+  }
+ 
+});
 
 app.get('/:folder/:file', function(req, res) {
   console.log('reading file');
