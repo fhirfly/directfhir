@@ -5,5 +5,8 @@
     "morgan": "^1.10.0",
     "path": "^0.12.7",
     "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "@types/fhir": "^0.0.35"
   }
 }

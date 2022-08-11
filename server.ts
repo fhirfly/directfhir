@@ -7,12 +7,16 @@ var logger = require('morgan');
 var path = require('path');
 const fs = require('fs');
 const { uuid } = require('uuidv4');
-//const {Bundle} = require('fhir');
+//const {fhirr4} = require('@types/fhir');
 
 var app = express();
 app.use(logger('dev'));
 
-app.get('/:folder', function(req, res) {
+async function executeSearch(req, res){
+  return;
+};
+
+app.get('/:folder', async function(req, res) {
   console.log('reading file');
   if (req.params!=null){
     executeSearch(req, res);
@@ -22,15 +26,15 @@ app.get('/:folder', function(req, res) {
   // For every file in the directory, roll each up in a bundle
   // respect the _count parameter,
   // support paging
-  // Note: should use a stream here, instead of fs.readFile
-
   try {
     // Get the files as an array
     const files = await fs.promises.readdir( './gitfhir/' + req.params.folder);
-    //var Bundle = new Bundle;
     //Bundle.id = uuid();
     //Bundle.name="";
     // Loop them all with the new for...of
+    var i = 0; //counter for bundle entries
+    var bundle = new Bundle;
+    bundle.id = uuid();
     for( const file of files ) {
         // Get the full paths
         const fromPath = path.join( './gitfhir/' + req.params.folder, file );        
@@ -39,7 +43,8 @@ app.get('/:folder', function(req, res) {
         if( stat.isFile() )
         var raw = fs.createReadStream(file)
         //Toto : Add file to a Bundle resource
-        //raw.pipe(Bundle.entry.add);
+        var entry = JSON.parse(raw);        
+        bundle.entry[i] = entry;
         raw.on('error', function(err) {
           if (err.code === 'ENOENT') {
             console.log('File not found!');
@@ -50,8 +55,12 @@ app.get('/:folder', function(req, res) {
             res.statusCode = 500;
             res.send('Internal Server Error');      
           }
-        });        
-    } // End for...of
+        }); 
+        i++;       
+    }
+    res.statusCode = 200;
+    res.send(bundle);
+     // End for...of
   }
   catch( e ) {
     // Catch anything bad that happens
