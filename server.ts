@@ -19,9 +19,11 @@ async function executeSearch(req, res){
   return;
 };
 
-//BUNDLE ALL RESOURCES in A FOLDER
+//BUNDLE ALL RESOURCES in A FOLDER or READ METADATA
 app.get('/:folder', async function(req, res) {
   console.log('reading file');
+
+  //If its a metadata request
   if (req.params.folder=='metadata'){
     console.log('read metadata')
     var raw = await fs.createReadStream('./gitfhir/metadata')  
@@ -42,9 +44,11 @@ app.get('/:folder', async function(req, res) {
     res.contentType('application/fhir+json');    
     res.end
   }
-    
+  //If its a search , we dont support it 
   if (req.params!=null){
     executeSearch(req, res);
+    res.statusCode = 400
+    res.send ('Bad Request');
     res.end;
   }
   // If this isn't a search
@@ -70,9 +74,6 @@ app.get('/:folder', async function(req, res) {
         // Get the full paths
         if (file.startsWith('.') == false){ //ignore hidden files
           const fromPath = path.join( './gitfhir/' + req.params.folder, file );        
-          // Stat the file to see if we have a file or dir
-          //const stat = await fs.promises.stat( fromPath );
-          //if( stat.isFile() )
           try{
               const asyncReadFile = util.promisify(fs.readFile)
               //.. this loop goes into some function with async or you can use readFileAsync
@@ -90,7 +91,6 @@ app.get('/:folder', async function(req, res) {
           }
           i++; //increment the file num  
         }
-             
     }
     bundle.total = i;
     //bundle.meta.lastUpdated = now;
