@@ -7,85 +7,124 @@ var logger = require('morgan');
 var path = require('path');
 const fs = require('fs');
 const { uuid } = require('uuidv4');
-//const {fhirr4} = require('@types/fhir');
+const util = require('util')
 
+//EXPRESS CONFIG
 var app = express();
 app.use(logger('dev'));
 
+
+//  WE DONT CURRENTLY SUPPORT SEARCHPARAMETER
 async function executeSearch(req, res){
   return;
 };
 
+//BUNDLE ALL RESOURCES in A FOLDER
 app.get('/:folder', async function(req, res) {
   console.log('reading file');
+  if (req.params.folder=='metadata'){
+    console.log('read metadata')
+    var raw = await fs.createReadStream('./gitfhir/metadata')  
+    raw.on('error', function(err) {
+      if (err.code === 'ENOENT') {
+        console.log('File not found!');
+        res.statusCode = 404;
+        res.send('File Not Found');
+        res.end;
+      } else {
+        console.log(err);
+        res.statusCode = 500;
+        res.send('Internal Server Error');
+        res.end;      
+      }
+    });
+    raw.pipe(res);
+    res.contentType('application/fhir+json');    
+    res.end
+  }
+    
   if (req.params!=null){
     executeSearch(req, res);
     res.end;
   }
   // If this isn't a search
   // For every file in the directory, roll each up in a bundle
-  // respect the _count parameter,
-  // support paging
+  // dont respect the _count parameter,
+  // dont support paging
   try {
     // Get the files as an array
     const files = await fs.promises.readdir( './gitfhir/' + req.params.folder);
-    //Bundle.id = uuid();
-    //Bundle.name="";
-    // Loop them all with the new for...of
     var i = 0; //counter for bundle entries
-    var bundle = new Bundle;
+    var bundle = {
+      "resourceType": "Bundle",
+      "id": "",
+      "meta": {
+        "lastUpdated": ""
+      },
+      "type": "searchset",
+      "total": 0,
+      "entry": [{}]
+    };
     bundle.id = uuid();
     for( const file of files ) {
         // Get the full paths
-        const fromPath = path.join( './gitfhir/' + req.params.folder, file );        
-        // Stat the file to see if we have a file or dir
-        const stat = await fs.promises.stat( fromPath );
-        if( stat.isFile() )
-        var raw = fs.createReadStream(file)
-        //Toto : Add file to a Bundle resource
-        var entry = JSON.parse(raw);        
-        bundle.entry[i] = entry;
-        raw.on('error', function(err) {
-          if (err.code === 'ENOENT') {
-            console.log('File not found!');
-            res.statusCode = 404;
-            res.send('File Not Found');
-          } else {
-            console.log(err);
-            res.statusCode = 500;
-            res.send('Internal Server Error');      
+        if (file.startsWith('.') == false){ //ignore hidden files
+          const fromPath = path.join( './gitfhir/' + req.params.folder, file );        
+          // Stat the file to see if we have a file or dir
+          //const stat = await fs.promises.stat( fromPath );
+          //if( stat.isFile() )
+          try{
+              const asyncReadFile = util.promisify(fs.readFile)
+              //.. this loop goes into some function with async or you can use readFileAsync
+              const data = await asyncReadFile(fromPath)
+              var entry = JSON.parse(data.toString());//Add file to a Bundle resource
+              bundle.entry[i] = entry
+              console.log(data.toString());
+          } 
+          catch(err){
+            if (err.code === 'ENOENT') {
+              console.log('Read file error.  Possible race condition');             
+            } else {
+              console.log(err);             
+            }
           }
-        }); 
-        i++;       
+          i++; //increment the file num  
+        }
+             
     }
+    bundle.total = i;
+    //bundle.meta.lastUpdated = now;
     res.statusCode = 200;
     res.send(bundle);
-     // End for...of
   }
   catch( e ) {
     // Catch anything bad that happens
     console.error( "We've thrown! Whoops!", e );
+    res.statusCode = 500;
+    res.send('Internal Server Error');
   }
  
 });
 
-app.get('/:folder/:file', function(req, res) {
+//READ ANY RESOURCE
+app.get('/:folder/:file', async function(req, res) {
   console.log('reading file');
   if (req.params!=null){
     executeSearch(req, res);
     res.end;
   }
-  // Note: should use a stream here, instead of fs.readFile
-  var raw = fs.createReadStream('./gitfhir/' + req.params.folder + '/' + req.params.file)
+  var raw = await fs.createReadStream('./gitfhir/' + req.params.folder + '/' + req.params.file)
   raw.on('error', function(err) {
     if (err.code === 'ENOENT') {
       console.log('File not found!');
       res.statusCode = 404;
       res.send('File Not Found');
+      res.end;
     } else {
       console.log(err);
       res.statusCode = 500;
-      res.send('Internal Server Error');      
+      res.send('Internal Server Error');
+      res.end;      
     }
   });
   raw.pipe(res);
@@ -93,14 +132,14 @@ app.get('/:folder/:file', function(req, res) {
   res.end
 });
 
-
+//CREATE ANY RESOURCE
 app.post('/:folder', function(req, res) {
   var body = '';  
   var filePath = '';
   var resourceId = '';
   req.on('data', function(data) {
       resourceId = JSON.parse(data).id;
-      if (resourceId == null){
+      if (resourceId == null){ //if there is not an id specified in the body, then make one
         resourceId = uuid();
         data = JSON.parse(data);
         data.id = resourceId
@@ -126,6 +165,7 @@ app.post('/:folder', function(req, res) {
 });
 
 /*
+DELETE ANY RESOURCE
 The resource is removed from the disk, and it will no longer appear in search results.
 The version number of the resource is incremented (essentially, a new deleted version is created).
 Previous versions of the resource are not physically deleted.
@@ -160,7 +200,7 @@ app.delete('/:folder/:file', function(req, res) {
 
 });
 
-
+//UPDATE ANY RESOURCE
 app.put('/:folder/:file', function(req, res) {
   var body = '';  
   var filePath = '';
@@ -186,5 +226,6 @@ app.put('/:folder/:file', function(req, res) {
   });
 });
 
+//START SERVER
 app.listen(3000);
 console.log('listening on port 3000');
