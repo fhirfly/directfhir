@@ -1,4 +1,14 @@
 {
+  "name": "directFHIR",
+  "version": "0.0.1",
+  "license" : "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/fhirfly/directfhir#readme",
+  "author": "Richard Braman - FHIR FLY <richard.braman@fhirfly.io> (https://fly.health/)",
+  "email" : "info@fhirfly.io",
+  "url" : "https://fly.health",
+  "bin": {
+      "directfhir": "./server.js"
+    },
   "dependencies": {
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
@@ -8,6 +18,16 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
-    "@types/fhir": "^0.0.35"
+    "@types/fhir": "^0.0.35",
+    "@types/node": "^18.7.2"
+  },
+  "funding": [{
+    "type" : "patreon",
+    "url" : "https://www.patreon.com/fhirfly"
+  },
+  {
+    "type" : "ethereum",
+    "url" : "0x75341449Dd0e8D696Ca09eD4996a637D2cF1EC57"
   }
+]
 }
