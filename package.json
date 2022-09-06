@@ -1,15 +1,13 @@
 {
   "name": "directFHIR",
   "version": "0.0.1",
-  "license" : "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/fhirfly/directfhir#readme",
   "author": "Richard Braman - FHIR FLY <richard.braman@fhirfly.io> (https://fly.health/)",
-  "email" : "info@fhirfly.io",
-  "url" : "https://fly.health",
   "bin": {
-      "directfhir": "./server.js"
-    },
+    "directfhir": "./server.js"
+  },
   "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv-safe": "^8.2.0",
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
     "morgan": "^1.10.0",
@@ -18,16 +16,39 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.18.6",
+    "@swc/core": "^1.2.241",
+    "@swc/jest": "^0.2.22",
     "@types/fhir": "^0.0.35",
-    "@types/node": "^18.7.2"
+    "@types/jest": "^28.1.7",
+    "@types/node": "^18.7.9",
+    "esbuild": "^0.15.5",
+    "esbuild-jest": "^0.5.0",
+    "esbuild-register": "^3.3.3",
+    "jest": "^28.1.3",
+    "memorystream": "^0.3.1",
+    "mock-fs": "^5.1.4",
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
   },
-  "funding": [{
-    "type" : "patreon",
-    "url" : "https://www.patreon.com/fhirfly"
+  "scripts": {
+    "es": "node -r esbuild-register",
+    "start": "nodemon -T ./src/server.ts"
   },
-  {
-    "type" : "ethereum",
-    "url" : "0x75341449Dd0e8D696Ca09eD4996a637D2cF1EC57"
-  }
-]
+  "email": "info@fhirfly.io",
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/fhirfly"
+    },
+    {
+      "type": "ethereum",
+      "url": "0x75341449Dd0e8D696Ca09eD4996a637D2cF1EC57"
+    }
+  ],
+  "homepage": "https://github.com/fhirfly/directfhir#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "url": "https://fly.health"
 }

@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import logger from "morgan";
 import { folderGet } from './folderGet';
 import { fileGet } from './fileGet';
-import { folderPost } from './folderPost';
+import { folderPost } from './filePost';
 import { fileDelete } from './fileDelete';
 import { filePut } from './filePut';
 
@@ -17,6 +17,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(logger("dev"));
+app.use(express.json());
 
 //  WE DONT CURRENTLY SUPPORT SEARCHPARAMETER
 export async function executeSearch(req, res) {
