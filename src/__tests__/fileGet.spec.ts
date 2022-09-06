@@ -8,9 +8,6 @@ import { Readable } from 'stream';
 jest.mock('fs');
 jest.mock('dotenv-safe');
 
-// OPTION - 1
-const mockedFS = jest.mocked(fs, true)
-
 it('return 404 if there is not file', async () => {
   const listeners = [];
   try {
@@ -39,8 +36,6 @@ it('return 404 if there is not file', async () => {
     expect(response.statusCode).toBe(404);
   } catch (err) {
     console.log(err);
-
-    expect(err.statusCode).toBe(404);
   }
 });
 
