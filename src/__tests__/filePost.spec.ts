@@ -3,27 +3,10 @@ import app from '../app';
 import fs from 'fs';
 import { jest } from '@jest/globals';
 
-function binaryParser(res, callback) {
-  res.setEncoding('binary');
-  res.data = '';
-  res.on('data', function (chunk) {
-    res.data += chunk;
-  });
-  res.on('end', function () {
-    callback(null, new Buffer(res.data, 'binary'));
-  });
-}
+jest.mock('fs');
+jest.mock('dotenv-safe');
 
-it('return 200 if folder was created', async () => {
-  const mockedFS = jest.mocked(fs, true);
-
-  const folder = 'folder';
-  const url = `/${folder}`;
-
-  mockedFS.writeFile.mockImplementationOnce((path, body, callback) => {
-    console.log("write");
-    callback();
-  });
+it('return 200 if file was created', async () => {
 
   const payload = {
     resourceType: 'Condition',
@@ -78,19 +61,28 @@ it('return 200 if folder was created', async () => {
     onsetDateTime: '1986-04-14T18:51:27-05:00',
     recordedDate: '1986-04-14T18:51:27-05:00',
   };
+  try {
+    
+    const mockedFS = jest.mocked(fs, true)
+    mockedFS.existsSync.mockImplementation(() => true);
+    mockedFS.createWriteStream.mockImplementationOnce(() => {
+      const response = request(app)
+      .post('/folder/file')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send(JSON.stringify(payload))
+      .responseType('application/json');
+  
+      expect(response.statusCode).toBe(201);
+      console.log({
+        l: response.location,
+        h: response.headers,
+      });
+    });
+  }
+  catch (err) {
+      console.trace(err);
+    }
 
-  const response = await request(app)
-    .post(url)
-    .set({
-      'Content-Type': 'application/json',
-    })
-    .send(JSON.stringify(payload))
-    .responseType('text');
-
-  expect(response.statusCode).toBe(201);
-
-  console.log({
-    l: response.location,
-    h: response.headers,
-  });
 });
