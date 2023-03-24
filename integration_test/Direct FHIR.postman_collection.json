@@ -1,0 +1,278 @@
+{
+	"info": {
+		"_postman_id": "30de4c28-7fcf-44c6-8158-6ddc6b4454c0",
+		"name": "Direct FHIR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14847648"
+	},
+	"item": [
+		{
+			"name": "Patient",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/Patient/c1b1ad2b-f2f3-8e54-7833-19f4ca081945",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Patient",
+						"c1b1ad2b-f2f3-8e54-7833-19f4ca081945"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition (All)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/Condition",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/Condition/2b4f652f-3352-dc06-f740-c6d26fa49c9a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition",
+						"2b4f652f-3352-dc06-f740-c6d26fa49c9a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition (search)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/Condition?code=1234",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Condition\",\r\n    \"meta\": {\r\n        \"profile\": [\r\n            \"http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition\"\r\n        ]\r\n    },\r\n    \"clinicalStatus\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\r\n                \"code\": \"active\"\r\n            }\r\n        ]\r\n    },\r\n    \"verificationStatus\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\r\n                \"code\": \"confirmed\"\r\n            }\r\n        ]\r\n    },\r\n    \"category\": [\r\n        {\r\n            \"coding\": [\r\n                {\r\n                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-category\",\r\n                    \"code\": \"encounter-diagnosis\",\r\n                    \"display\": \"Encounter Diagnosis\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"code\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://snomed.info/sct\",\r\n                \"code\": \"302870006\",\r\n                \"display\": \"Hypertriglyceridemia (disorder)\"\r\n            }\r\n        ],\r\n        \"text\": \"Hypertriglyceridemia (disorder)\"\r\n    },\r\n    \"subject\": {\r\n        \"reference\": \"urn:uuid:c1b1ad2b-f2f3-8e54-7833-19f4ca081945\"\r\n    },\r\n    \"encounter\": {\r\n        \"reference\": \"urn:uuid:389e7c01-989c-f89f-5852-8706097bdb30\"\r\n    },\r\n    \"onsetDateTime\": \"1986-04-14T18:51:27-05:00\",\r\n    \"recordedDate\": \"1986-04-14T18:51:27-05:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/Condition",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Condition\",\r\n    \"meta\": {\r\n        \"profile\": [\r\n            \"http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition\"\r\n        ]\r\n    },\r\n    \"clinicalStatus\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\r\n                \"code\": \"active\"\r\n            }\r\n        ]\r\n    },\r\n    \"verificationStatus\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\r\n                \"code\": \"confirmed\"\r\n            }\r\n        ]\r\n    },\r\n    \"category\": [\r\n        {\r\n            \"coding\": [\r\n                {\r\n                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-category\",\r\n                    \"code\": \"problem-list\",\r\n                    \"display\": \"Problem List\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"code\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://snomed.info/sct\",\r\n                \"code\": \"302870006\",\r\n                \"display\": \"Hypertriglyceridemia (disorder)\"\r\n            }\r\n        ],\r\n        \"text\": \"Hypertriglyceridemia (disorder)\"\r\n    },\r\n    \"subject\": {\r\n        \"reference\": \"urn:uuid:c1b1ad2b-f2f3-8e54-7833-19f4ca081945\"\r\n    },\r\n    \"encounter\": {\r\n        \"reference\": \"urn:uuid:389e7c01-989c-f89f-5852-8706097bdb30\"\r\n    },\r\n    \"onsetDateTime\": \"1986-04-14T18:51:27-05:00\",\r\n    \"recordedDate\": \"1986-04-14T18:51:27-05:00\",\r\n    \"id\": \"4e001f8f-4a69-4ba9-ae29-c0cd418afaa7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/Condition/4e001f8f-4a69-4ba9-ae29-c0cd418afaa7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition",
+						"4e001f8f-4a69-4ba9-ae29-c0cd418afaa7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Condition",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/Condition/7e8ab302-991a-4a05-8160-0b1f381c059e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"Condition",
+						"7e8ab302-991a-4a05-8160-0b1f381c059e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metadata",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/metadata",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "supersecret",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
