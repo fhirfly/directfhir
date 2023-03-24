@@ -5,20 +5,20 @@ import { getGitfhirFilepath } from './gitfhir';
 //CREATE ANY RESOURCE
 export const folderPost = async (req, res) => {
   var body = "";
+  console.log("writing file");
   var filePath = "";
   var resourceId = "";
-  req.on("data", function (data) {
-    resourceId = JSON.parse(data).id;
+  try{
+  body += JSON.stringify(req.body);
+  resourceId = JSON.parse(body).id;
     if (resourceId == null) {
       //if there is not an id specified in the body, then make one
-      resourceId = uuid();
-      data = JSON.parse(data);
-      data.id = resourceId;
+      console.log("no resource id in body, creating one");
+      resourceId = uuid();     
+      JSON.parse(body).id = resourceId;
     }
     filePath = getGitfhirFilepath(req.params.folder, resourceId);
-    body += JSON.stringify(data);
-  });
-  req.on("end", function () {
+    console.log(body);
     fs.writeFile(filePath, body, function () {
       var vid = ""; //Todo get the version of the file
       res.statusCode = 201;
@@ -26,11 +26,20 @@ export const folderPost = async (req, res) => {
       res.contentType("application/fhir+json");
       res.send(body);
       res.end();
+      return;
     });
-  });
-  req.on("error", function (err) {
-    console.log(err);
-    res.statusCode = 500;
-    res.send("Internal Server Error");
-  });
+  }
+  catch(err){
+    if (err.code === "ENOENT") {
+      console.log("File not found!");
+      res.statusCode = 404;
+      res.send("File Not Found");
+    } else {
+      console.log(err);
+      res.statusCode = 500;
+      res.send("Internal Server Error");
+    }
+    return;
+  }
 }
+   

@@ -36,10 +36,12 @@ export const fileDelete = async (req, res) => {
         console.log("File not found!");
         res.statusCode = 404;
         res.send("File Not Found");
+        return;
       } else {
         console.log(err);
         res.statusCode = 500;
         res.send("Internal Server Error");
+        return;
       }
     });
   });
