@@ -10,11 +10,12 @@ export const folderGet = async (req, res) => {
 
   //If its a metadata request
   if (req.params.folder == "metadata") {
-    console.log("read metadata");
+    console.log("read metadata ->" + getGitfhirMetadata());
     var raw = await fs.createReadStream(getGitfhirMetadata());
     raw.on("error", function (err) {
       if (err.code === "ENOENT") {
         console.log("File not found!");
+        res.contentType("application/fhir+json");
         res.statusCode = 404;
         res.send("File Not Found");
         res.end;
@@ -27,9 +28,10 @@ export const folderGet = async (req, res) => {
         return;
       }
     });
-    raw.pipe(res);
     res.contentType("application/fhir+json");
+    raw.pipe(res);    
     res.end;
+    return;
   }
   //If its a search , we dont support it
   if (Object.keys(req.query).length !== 0) {

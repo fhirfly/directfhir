@@ -4,13 +4,14 @@ import { getGitfhirFilepath } from './gitfhir';
 
 //READ ANY RESOURCE
 export const fileGet = async (req, res) => {
-  console.log("reading file");
+  
   console.log({
     p: getGitfhirFilepath(req.params.folder, req.params.file),
     r: fs.createReadStream.mock,
   });
   res.contentType("application/fhir+json");
-
+  
+  console.log("reading file " + req.params.file + " from directory " + req.params.folder)
   var raw = await fs.createReadStream(getGitfhirFilepath(req.params.folder, req.params.file));
   raw.on("error", function (err) {
     if (err.code === "ENOENT") {
