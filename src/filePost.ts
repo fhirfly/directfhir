@@ -14,8 +14,11 @@ export const folderPost = async (req, res) => {
     if (resourceId == null) {
       //if there is not an id specified in the body, then make one
       console.log("no resource id in body, creating one");
-      resourceId = uuid();     
-      JSON.parse(body).id = resourceId;
+      resourceId = uuid();
+      var newbody = JSON.parse(body);
+      newbody["id"] = resourceId;
+      body = JSON.stringify(newbody);
+      //JSON.parse(body).id = resourceId;
     }
     filePath = getGitfhirFilepath(req.params.folder, resourceId);
     console.log(body);

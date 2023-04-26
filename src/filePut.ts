@@ -8,7 +8,11 @@ export const filePut = async (req, res) => {
   var resourceId = "";
  try{
     filePath = getGitfhirFilepath(req.params.folder, req.params.file);
-    body += JSON.stringify(req.body);
+    resourceId += req.params.file;
+    var newbody = req.body;
+    newbody['id'] = resourceId;
+    //body += JSON.stringify(req.body);
+    body += JSON.stringify(newbody);
     console.log(filePath);
     console.log(body);
     fs.writeFile(filePath, body, function () {
@@ -16,6 +20,7 @@ export const filePut = async (req, res) => {
       //todo: add operation outcome
       res.statusCode = 200;
       res.contentType("application/fhir+json");
+      res.send(body);
       res.end();
       return;
     });
