@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { uuid } from 'uuidv4';
 import util from 'util';
-import { executeSearch } from './app';
 import { getGitfhirFilepath, getGitfhirFolderPath, getGitfhirMetadata } from './gitfhir';
 
 //BUNDLE ALL RESOURCES in A FOLDER or READ METADATA
@@ -35,11 +34,15 @@ export const folderGet = async (req, res) => {
   }
   //If its a search , we dont support it
   if (Object.keys(req.query).length !== 0) {
-    console.log(req.query)
-    executeSearch(req, res);
-    res.statusCode = 400;
-    res.send("Bad Request");
-    res.end;
+    try {
+      // Construct a search query from multiple parameters
+      let searchQuery = Object.entries(req.query).map(([field, value]) => `${field}:${value}`).join(' ');
+      
+      let results = searchIndex(req.params.folder, searchQuery);
+      res.json(results);
+  } catch (err) {
+      res.status(400).json({ error: err.message });
+  }
     return;
   }
   // If this isn't a search
@@ -100,3 +103,11 @@ export const folderGet = async (req, res) => {
   }
 }
 
+function searchIndex(resourceType, query) {
+  let index = indices[resourceType];
+  if (!index) {
+      throw new Error(`No index found for resource type ${resourceType}`);
+  }
+
+  return index.search(query);
+}

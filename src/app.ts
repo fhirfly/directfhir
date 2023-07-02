@@ -19,10 +19,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(logger("dev"));
 app.use(express.json());
 
-//  WE DONT CURRENTLY SUPPORT SEARCHPARAMETER
-export async function executeSearch(req, res) {
-  return;
-}
 
 //BUNDLE ALL RESOURCES in A FOLDER or READ METADATA
 app.get("/:folder", folderGet);
