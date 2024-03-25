@@ -11,6 +11,6 @@ dotenvSafe.config({
 });
 
 export const config = {
-  PORT: 3000,
+  PORT: 3001,
   GITFHIR_DIR: process.env.GITFHIR_DIR
 } as const;

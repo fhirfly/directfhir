@@ -5,7 +5,7 @@ import { executeSearch } from './app';
 import { getGitfhirFilepath, getGitfhirFolderPath, getGitfhirMetadata } from './gitfhir';
 
 //BUNDLE ALL RESOURCES in A FOLDER or READ METADATA
-export const folderGet = async (req, res) => {
+export const folderGet = async (req: { params: { folder: string; }; query: {}; }, res: { contentType: (arg0: string) => void; statusCode: number; send: (arg0: string) => void; end: any; }) => {
   console.log("reading file");
 
   //If its a metadata request

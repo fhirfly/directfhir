@@ -13,14 +13,20 @@ import { filePut } from './filePut';
 
 //EXPRESS CONFIG
 const app = express();
-
+const cors = require('cors');
+//START SERVER
+var corsOptions = {
+    origin: 'http://localhost:3000', // replace with your domain
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(logger("dev"));
 app.use(express.json());
 
 //  WE DONT CURRENTLY SUPPORT SEARCHPARAMETER
-export async function executeSearch(req, res) {
+export async function executeSearch(req: any, res: any) {
   return;
 }
 

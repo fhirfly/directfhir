@@ -3,7 +3,7 @@ import fs from 'fs';
 import { getGitfhirFilepath } from './gitfhir';
 
 //CREATE ANY RESOURCE
-export const folderPost = async (req, res) => {
+export const folderPost = async (req: { body: any; params: { folder: string; }; }, res: { statusCode: number; location: (arg0: string) => void; contentType: (arg0: string) => void; send: (arg0: string) => void; end: () => void; }) => {
   var body = "";
   console.log("writing file");
   var filePath = "";
@@ -21,6 +21,7 @@ export const folderPost = async (req, res) => {
       //JSON.parse(body).id = resourceId;
     }
     filePath = getGitfhirFilepath(req.params.folder, resourceId);
+    console.log(filePath);
     console.log(body);
     fs.writeFile(filePath, body, function () {
       var vid = ""; //Todo get the version of the file
