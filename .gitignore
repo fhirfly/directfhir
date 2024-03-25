@@ -1,3 +1,12 @@
-/gitfhir
+gitfhir
+./gitfhir
 /node_modules
 .DS_Store
+package-lock.json
+yarn.lock
+directfhir
+directFHIR-linux
+directFHIR-macos
+directFHIR-win.exe
+package-lock.json
+sea-prep.blob
